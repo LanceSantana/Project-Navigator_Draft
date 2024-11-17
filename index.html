@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Prompt Runner</title>
+</head>
+<body>
+    <h1>ChatGPT Prompt Runner</h1>
+    <form id="chat-form">
+        <label for="api-key">API Key:</label><br>
+        <input type="text" id="api-key" name="api-key" placeholder="Enter your OpenAI API Key" required><br><br>
+        
+        <label for="prompt">Prompt:</label><br>
+        <textarea id="prompt" name="prompt" placeholder="Enter your prompt here" required></textarea><br><br>
+        
+        <button type="submit">Run Prompt</button>
+    </form>
+    
+    <h2>Response:</h2>
+    <div id="response-box" style="white-space: pre-wrap; border: 1px solid #ccc; padding: 10px;"></div>
+    
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const apiKey = document.getElementById('api-key').value;
+            const prompt = document.getElementById('prompt').value;
+            const responseBox = document.getElementById('response-box');
+            
+            responseBox.textContent = "Loading...";
+
+            try {
+                const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-4",
+                        messages: [
+                            { "role": "system", "content": "You are a project management chatbot." },
+                            { "role": "user", "content": prompt }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                responseBox.textContent = data.choices[0].message.content;
+            } catch (error) {
+                responseBox.textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
