@@ -1,22 +1,30 @@
-name: Deploy
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # Trigger deployment on pushes to the main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write  # Ensure the action can write to the repository
+
     steps:
-      - name: Checkout code
+      # Step 1: Check out the repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Create API key file
+      # Step 2: Create the `api-key.js` file dynamically
+      - name: Create API Key File
         run: echo "window.API_KEY = '${{ secrets.OPENAI_API_KEY }}';" > api-key.js
 
+      # Step 3: List the directory to verify the file was created
+      - name: Verify Files
+        run: ls -R
+
+      # Step 4: Deploy files to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
