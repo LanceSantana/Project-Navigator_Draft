@@ -1,4 +1,4 @@
-name: Deploy with Secret API Key
+name: Deploy Test
 
 on:
   push:
@@ -12,12 +12,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Inject API Key
-        run: |
-          echo "window.API_KEY = '${{ secrets.API_KEY }}';" > api-key.js
+      - name: Create test file
+        run: echo "window.API_KEY = 'test-key';" > api-key.js
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
+          silent: true
