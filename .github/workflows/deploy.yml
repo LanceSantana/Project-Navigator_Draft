@@ -1,4 +1,4 @@
-name: Deploy Test
+name: Deploy
 
 on:
   push:
@@ -8,16 +8,18 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Create test file
-        run: echo "window.API_KEY = 'test-key';" > api-key.js
+      - name: Create API key file
+        run: echo "window.API_KEY = '${{ secrets.OPENAI_API_KEY }}';" > api-key.js
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
-          silent: true
+          force_orphan: true
