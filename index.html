@@ -110,6 +110,9 @@
         </div>
     </div>
 
+    <!-- Include dynamically injected API key -->
+    <script src="api-key.js"></script>
+
     <script>
         const chatBox = document.getElementById('chatBox');
         const userInput = document.getElementById('userInput');
@@ -183,7 +186,11 @@
         }
 
         async function fetchOpenAI(message) {
-            const apiKey = "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";
+            const apiKey = window.API_KEY; // Securely injected API key
+            if (!apiKey) {
+                throw new Error('API key not available!');
+            }
+
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
                 headers: {
